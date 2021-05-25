@@ -188,6 +188,20 @@ class SignupForm extends React.Component{
 
     if (currentStep === 2) {
       // Check Step 2 is complete
+      if (
+        this.state.email !== "" &&
+        this.state.dateOfBirth !== "" &&
+        errors.email === "" &&
+        errors.dateOfBirth === ""
+      ) {
+
+        this.setState({step2Complete: true});
+
+      } else {
+
+        this.setState({step2Complete: false});
+
+      }
 
     }
   }
@@ -201,7 +215,7 @@ class SignupForm extends React.Component{
 
     if (name === "phoneNumber") {
 
-      errors.phoneNumber = validator.isMobilePhone(value, 'en-GB') ? "" : "Please Enter A Valid Uk Mobile Number.";
+      errors.phoneNumber = validator.isMobilePhone(value, 'en-GB') ? "" : "Please Enter A Valid UK Mobile Number.";
 
     } else if (name === "email") {
 
@@ -209,7 +223,7 @@ class SignupForm extends React.Component{
 
     } else if (name === "dateOfBirth") {
 
-      errors.dateOfBirth = validator.isEmail(value) ? "" : "Please enter a valid date of birth."
+      errors.dateOfBirth = validator.isDate(value) ? "" : "Please enter a valid date of birth."
 
     }
 
@@ -271,8 +285,6 @@ class SignupForm extends React.Component{
           errors = {this.state.errors}
         />
 
-        
-        
         <SignupFormButtons 
           currentStep={this.state.currentStep} 
           totalSteps = {this.state.totalSteps}
