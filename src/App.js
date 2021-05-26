@@ -1,9 +1,92 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Table from 'react-bootstrap/Table';
 import validator from 'validator';
-import DatePicker from "react-datepicker";
+import DatePicker from 'react-date-picker';
+import './style.css';
 import './App.css';
 import './index.css';
+
+function formatDate(date) {
+      
+      const d = new Date(date)
+      let  day = '' + d.getDate();
+      let month = '' + (d.getMonth() + 1);
+      let year = d.getFullYear();
+  
+      if (month.length < 2) {
+          month = '0' + month;
+      }
+      if (day.length < 2) {
+          day = '0' + day;
+      }
+  
+      return [year, month, day].join('-');
+}
+
+function SignUpComplete(props) {
+  if (props.currentStep !==4) {
+    return null;
+  }
+
+  return(
+    <div>
+      <p>Welcome {props.firstName} you have successfully signed up!</p>
+      <p><a href="">Sign In</a></p>
+    </div>
+  );
+
+}
+
+function ConfirmDetails(props) {
+
+  // If we aren't currently on step 1 of sign up, dont render anything
+  if (props.currentStep !== 3) {
+    return null;
+  }
+  
+  return(
+    <div>
+      <div id="user-details">
+          <Table borderless>
+            <tbody>
+              <tr>
+                <td>First Name</td>
+                <td>{props.signUpState.firstName}</td>
+              </tr>
+              <tr>
+                <td>Last Name</td>
+                <td>{props.signUpState.lastName}</td>
+              </tr>
+              <tr>
+                <td>PhoneNumber</td>
+                <td>{props.signUpState.phoneNumber}</td>
+              </tr>
+              <tr>
+                <td>Email</td>
+                <td>{props.signUpState.email}</td>
+              </tr>
+              <tr>
+                <td>Date of Birth</td>
+                <td>{props.signUpState.dateOfBirth.toDateString().slice(4)}</td>
+              </tr>
+            </tbody>
+          </Table>
+      </div>
+      <form onSubmit={props.handleSubmit}>
+        <div className="field-container">
+          <label>
+            Confirm
+            <input name="confirmedDetails" type = "radio"  checked={props.signUpState.confirmedDetails} onChange={props.confirmDetails}/>
+          </label>
+        </div>
+
+      </form>
+    </div>
+
+  );
+  
+}
 
 function Step2(props) {
 
@@ -16,15 +99,31 @@ function Step2(props) {
       <form onSubmit={props.handleSubmit}>
         <div className="field-container">
           <label>
-            <input name="email" placeHolder= "Email" type = "email" className="sign-up-field" value={props.email} onChange={props.handleChange}/>
+            <input 
+              name="email" 
+              placeholder= "Email" 
+              type = "email" 
+              className="sign-up-field" 
+              value={props.email} 
+              onChange={props.handleChange}
+            />
             <div className="error">{props.errors.email}</div>
           </label>
         </div>
 
         <div className="field-container">
           <label>
-            <input name="dateOfBirth" placeHolder= "Date Of Birth" type = "text" className="sign-up-field" value={props.dateOfBirth} onChange={props.handleChange}/>
-            <div className="error">{props.errors.dateOfBirth}</div>
+          <DatePicker
+            name="dateOfBirth"
+            placeholder= "Date Of Birth"
+            value={props.dateOfBirth}
+            onChange={props.handleDateOfBirthChange}
+            className="sign-up-field"
+            format="y-MM-dd"
+            maxDate ={new Date()}
+            
+          />
+          <div className="error">{props.errors.dateOfBirth}</div>
           </label>
         </div>
       </form>
@@ -39,7 +138,7 @@ function Step1(props) {
     if (props.currentStep !== 1) {
       return null;
     }
-    //todo first name and lastname
+    
     return(
       <form onSubmit={props.handleSubmit}>
 
@@ -51,13 +150,28 @@ function Step1(props) {
 
         <div className="field-container">
           <label>
-            <input name="lastName" placeholder="Last Name" type = "text" className="sign-up-field" value={props.lastName} onChange={props.handleChange}/>
+            <input 
+              name="lastName" 
+              placeholder="Last Name" 
+              type = "text" 
+              className="sign-up-field" 
+              value={props.lastName} 
+              onChange={props.handleChange}
+            />
           </label>
         </div>
 
         <div className="field-container">
           <label>
-            <input name="phoneNumber" placeholder="Phone Number" type = "tel" pattern="[789][0-9]{9}" className="sign-up-field" value={props.phoneNumber} onChange={props.handleChange}/>
+            <input 
+              name="phoneNumber" 
+              placeholder="Phone Number" 
+              type = "tel" 
+              pattern="[789][0-9]{9}" 
+              className="sign-up-field" 
+              value={props.phoneNumber} 
+              onChange={props.handleChange}
+            />
             <div className="error">{props.errors.phoneNumber}</div>
           </label>
         </div>
@@ -72,7 +186,7 @@ function SignupFormButtons(props) {
 
   let buttons = [];
 
-  if (props.currentStep < props.totalSteps) {
+  if (props.currentStep < props.totalSteps - 1) {
 
     let nextDisabled = true;
     if (props.currentStep === 1) {
@@ -81,10 +195,6 @@ function SignupFormButtons(props) {
 
     if (props.currentStep === 2) {
       nextDisabled = !props.step2Complete
-    }
-
-    if (props.currentStep === 3) {
-      nextDisabled = !props.confirmedDetails
     }
 
     buttons.push(
@@ -100,7 +210,7 @@ function SignupFormButtons(props) {
 
   }
 
-  if (props.currentStep !== 1) {
+  if (props.currentStep !== 1 && props.currentStep < props.totalSteps) {
 
     buttons.push(
       <button 
@@ -114,8 +224,16 @@ function SignupFormButtons(props) {
 
   }
 
-  if (props.currentStep === props.totalSteps) {
-    buttons.push(<button key="submit" className="btn btn-submit" onClick={props.onSubmit}>Register</button>);
+  if (props.currentStep === props.totalSteps - 1) {
+    buttons.push(
+      <button 
+        key="submit" 
+        className="btn btn-submit"
+        disabled ={!props.confirmedDetails}
+        onClick={props.signup}
+      >
+        Register
+      </button>);
   }
 
   return (
@@ -142,6 +260,7 @@ class SignupForm extends React.Component{
       phoneNumber: "",
       email: "",
       dateOfBirth: "",
+      formattedDateOfBirth: "",
       errors: {
         email: "",
         phoneNumber: "",
@@ -149,7 +268,8 @@ class SignupForm extends React.Component{
       },
       step1Complete: false,
       step2Complete: false,
-      confirmedDetails: false
+      confirmedDetails: false,
+      title: "Create your account"
     };
 
     // give handleChange and handleSubmit buttons access to this
@@ -162,6 +282,12 @@ class SignupForm extends React.Component{
     this.previousStep = this.previousStep.bind(this);
 
     this.validateStep = this.validateStep.bind(this);
+
+    this.handleDateOfBirthChange = this.handleDateOfBirthChange.bind(this);
+
+    this.confirmDetails = this.confirmDetails.bind(this);
+
+    this.signUp = this.signUp.bind(this);
   }
 
   validateStep() {
@@ -185,12 +311,14 @@ class SignupForm extends React.Component{
 
       }
     }
+    
 
     if (currentStep === 2) {
       // Check Step 2 is complete
       if (
         this.state.email !== "" &&
-        this.state.dateOfBirth !== "" &&
+        this.state.formattedDateOfBirth &&
+        this.state.dateOfBirth &&
         errors.email === "" &&
         errors.dateOfBirth === ""
       ) {
@@ -206,10 +334,35 @@ class SignupForm extends React.Component{
     }
   }
 
+  confirmDetails() {
+      
+    this.setState({confirmedDetails: true});
+  }
+
+
+  // need specific function for date selector field
+  handleDateOfBirthChange(newDateOfBirth) {
+    
+    let formattedDateOfBirth = formatDate(newDateOfBirth);
+    let errors = this.state.errors;
+
+    errors.dateOfBirth = validator.isDate(formattedDateOfBirth) ? "" : "Please enter a valid date of birth.";
+    // update state, always set confirmedDetails to false on change
+    this.setState({ 
+      dateOfBirth: newDateOfBirth, 
+      formattedDateOfBirth: formattedDateOfBirth, 
+      confirmedDetails: false,
+      errors: errors
+    }, this.validateStep);
+  }
+
+  // general field change handling
   handleChange(event) {
+
     const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
+    let value = target.value;
     const name = target.name;
+
 
     let errors = this.state.errors;
 
@@ -225,12 +378,13 @@ class SignupForm extends React.Component{
 
       errors.dateOfBirth = validator.isDate(value) ? "" : "Please enter a valid date of birth."
 
-    }
-
-    this.setState({ [name]: value, errors: errors}, function() {
+    } 
+    
+    // update state, always set confirmedDetails to false on change
+    this.setState({ [name]: value, errors: errors, confirmedDetails: false}, function() {
       this.validateStep();
     });
-
+    
   }
 
   handleSubmit(event) {
@@ -257,7 +411,20 @@ class SignupForm extends React.Component{
 
   
   signUp() {
-    //TODO finish the process
+
+    const dataToSave = {
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      phoneNumber: this.state.phoneNumber,
+      email: this.state.email,
+      dateOfBirth: this.state.dateOfBirth
+
+    }
+
+    // Here we would format data as required call a function to save the data to backend
+    // then call the below as a callback
+    this.nextStep();
+    this.setState({title:"Account Created"})
 
   }
 
@@ -265,7 +432,7 @@ class SignupForm extends React.Component{
 
     return(
       <div id="sign-up-form">
-        <h1>Sign Up</h1>
+        <h1>{this.state.title}</h1>
         <Step1 
           currentStep={this.state.currentStep} 
           firstName={this.state.firstName} 
@@ -280,9 +447,17 @@ class SignupForm extends React.Component{
           currentStep={this.state.currentStep} 
           email={this.state.email} 
           dateOfBirth={this.state.dateOfBirth}
-          handleChange={this.handleChange} 
+          handleChange={this.handleChange}
+          handleDateOfBirthChange={this.handleDateOfBirthChange}
           handleSubmit={this.handleSubmit} 
           errors = {this.state.errors}
+        />
+
+        <ConfirmDetails
+          currentStep={this.state.currentStep}
+          signUpState={this.state}
+          confirmDetails = {this.confirmDetails}
+          handleSubmit={this.handleSubmit}
         />
 
         <SignupFormButtons 
@@ -295,6 +470,15 @@ class SignupForm extends React.Component{
           previousStep={this.previousStep} 
           signup={this.signUp}
         />
+
+        <SignUpComplete 
+          currentStep={this.state.currentStep} 
+          firstName={this.state.firstName}
+          email={this.state.email}
+          
+        />
+
+        
       </div>
     );
   }

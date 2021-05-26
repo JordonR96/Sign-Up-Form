@@ -1,0 +1,18 @@
+input {
+    height: 20px;
+    padding: 5px;
+    margin:3px;
+    border-color: #4c4e4c;
+    border-width: 0.5px;
+    border-radius: 2px;
+}
+
+input:hover {
+    box-shadow:2px 2px 6px rgba(0,0,0,.3);
+    transition: box-shadow 500ms, background 1s;
+    transition-delay: 30ms;
+}
+
+button {
+
+}
