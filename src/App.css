@@ -1,38 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
 .App {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  font-family: 'Roboto', sans-serif;;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.page-title {
+  font-weight:600;
+  font-size: 35px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(71, 71, 71, 0.315);
+  
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+.error {
+  font-size: 15px;
+  color: red;
+  padding: 2px;
+}
+
+.field-label{
+  
+  padding-bottom: 5px;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.field {
+  height: 20px;
+  padding: 7px;
+  margin: 0 auto;
+  border-color: #9ca09c;
+  border-width: 0.5px;
+  border-radius: 2px;
+  width: 95%;
+  height: 25px;
+  font-size: 19px;
+  text-align: center;
+  display: inline-block;
+}
+
+.field:hover, .date-picker-field:hover{
+  box-shadow:2px 2px 6px rgba(0, 0, 0, 0.747);
+  transition: box-shadow 500ms, background 1s;
+  transition-delay: 10ms;
+}
+
+.date-picker-field {
+  display: inline-block;
+  width: 100%;
+  padding: 7px;
+  height: auto;
+  font-size: 21px;
+}
+
+.field-container {
+  padding-bottom: 10px;
+  display: inline-block;
+  min-width: 60%;
+}
+
+.user-details-table {
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  margin: 0 auto;
+  padding-bottom: 20px
 }
 
-.App-link {
-  color: #61dafb;
+.user-detail-name {
+  text-align: left;
+  font-weight: bold;
+  padding-right:10px
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.user-detail-value {
+  text-align: left;
+  padding-left: 10px
+
 }
+
+.user-details table {
+  margin-left: 30%
+}
+
+.btn {
+  min-width: 250px;
+  border-radius: 10px;
+  border-color: rgba(163, 158, 158, 0.3);
+  background-color: rgb(164, 211, 120);
+  padding: 3px;
+  margin: 4px;
+  height: 30px;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.btn:disabled {
+  background-color: rgba(164, 211, 120, 0.3);
+}
+
+.btn:hover {
+  box-shadow:2px 2px 6px rgba(0, 0, 0, 0.747);
+  transition: box-shadow 500ms, background 1s;
+  transition-delay: 150ms;
+}
+
+.btn-submit {
+  background-color: rgba(65, 105, 225, 0.712);
+}
+
+.btn-submit:disabled {
+  background-color: rgba(65, 105, 225, 0.336);
+}
+
+
